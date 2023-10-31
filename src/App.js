@@ -7,7 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 function App() {
   const ACCESS_KEY = "uGB0KsbCmxgX2F8ghzUD0g-Si2ldgbcod_DNon1MQqo";
   const [imageUrls, setImageUrls] = useState([]);
-  const [searchText, setSearchText] = useState("dog");
+  const [searchText, setSearchText] = useState("");
   const [finalSearch, setFinalSearch] = useState("");
   const [fetchAPIPage, setFetchAPIPage] = useState({
     currentPage: 0,
@@ -16,15 +16,20 @@ function App() {
   });
 
   useEffect(() => {
+    if (finalSearch) {
+      setImageUrls([]);
+      setFetchAPIPage({
+        currentPage: 0,
+        totalPage: 0,
+        total: 0,
+      });
+    }
+  }, [searchText]);
+
+  useEffect(() => {
     if (!finalSearch) {
       return;
     }
-    setFetchAPIPage({
-      currentPage: 0,
-      totalPage: 0,
-      total: 0,
-    });
-    setImageUrls([]);
     loadImages();
   }, [finalSearch]);
 
@@ -36,7 +41,7 @@ function App() {
     );
     const imageResult = await response.json();
     console.log(imageResult);
-
+    console.log(imageUrls);
     setFetchAPIPage({
       currentPage: fetchAPIPage.currentPage + 1,
       totalPage: imageResult.total_pages,
